@@ -9,45 +9,12 @@
 import Foundation
 import MqttCocoaAsyncSocket
 
-/**
- * Conn Ack
- */
-@objc public enum CocoaMQTTConnAck: UInt8, CustomStringConvertible {
-    case accept  = 0
-    case unacceptableProtocolVersion
-    case identifierRejected
-    case serverUnavailable
-    case badUsernameOrPassword
-    case notAuthorized
-    case reserved
-    
-    public init(byte: UInt8) {
-        switch byte {
-        case CocoaMQTTConnAck.accept.rawValue..<CocoaMQTTConnAck.reserved.rawValue:
-            self.init(rawValue: byte)!
-        default:
-            self = .reserved
-        }
-    }
-    
-    public var description: String {
-        switch self {
-        case .accept:                       return "accept"
-        case .unacceptableProtocolVersion:  return "unacceptableProtocolVersion"
-        case .identifierRejected:           return "identifierRejected"
-        case .serverUnavailable:            return "serverUnavailable"
-        case .badUsernameOrPassword:        return "badUsernameOrPassword"
-        case .notAuthorized:                return "notAuthorized"
-        case .reserved:                     return "reserved"
-        }
-    }
-}
 
 /// CocoaMQTT Delegate
 @objc public protocol CocoaMQTTDelegate {
 
     ///
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck)
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocaMQTT.CocoaMQTTConnAck)
     
     ///
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16)
@@ -141,6 +108,41 @@ protocol CocoaMQTTClient {
 ///
 /// - Note: MGCDAsyncSocket need delegate to extend NSObject
 public class CocoaMQTT: NSObject, CocoaMQTTClient {
+    
+    
+    /**
+     * Conn Ack
+     */
+    @objc public enum CocoaMQTTConnAck: UInt8, CustomStringConvertible {
+        case accept  = 0
+        case unacceptableProtocolVersion
+        case identifierRejected
+        case serverUnavailable
+        case badUsernameOrPassword
+        case notAuthorized
+        case reserved
+        
+        public init(byte: UInt8) {
+            switch byte {
+            case CocoaMQTTConnAck.accept.rawValue..<CocoaMQTTConnAck.reserved.rawValue:
+                self.init(rawValue: byte)!
+            default:
+                self = .reserved
+            }
+        }
+        
+        public var description: String {
+            switch self {
+            case .accept:                       return "accept"
+            case .unacceptableProtocolVersion:  return "unacceptableProtocolVersion"
+            case .identifierRejected:           return "identifierRejected"
+            case .serverUnavailable:            return "serverUnavailable"
+            case .badUsernameOrPassword:        return "badUsernameOrPassword"
+            case .notAuthorized:                return "notAuthorized"
+            case .reserved:                     return "reserved"
+            }
+        }
+    }
     
     public weak var delegate: CocoaMQTTDelegate?
 
@@ -279,7 +281,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient {
     fileprivate var reader: CocoaMQTTReader?
     
     // Closures
-    public var didConnectAck: (CocoaMQTT, CocoaMQTTConnAck) -> Void = { _, _ in }
+    public var didConnectAck: (CocoaMQTT, CocaMQTT.CocoaMQTTConnAck) -> Void = { _, _ in }
     public var didPublishMessage: (CocoaMQTT, CocoaMQTTMessage, UInt16) -> Void = { _, _, _ in }
     public var didPublishAck: (CocoaMQTT, UInt16) -> Void = { _, _ in }
     public var didReceiveMessage: (CocoaMQTT, CocoaMQTTMessage, UInt16) -> Void = { _, _, _ in }
@@ -685,8 +687,8 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
             internal_disconnect()
         }
 
-        delegate?.mqtt(self, didConnectAck: connack.returnCode ?? CocoaMQTTConnAck.serverUnavailable)
-        didConnectAck(self, connack.returnCode ?? CocoaMQTTConnAck.serverUnavailable)
+        delegate?.mqtt(self, didConnectAck: connack.returnCode ?? CocaMQTT.CocoaMQTTConnAck.serverUnavailable)
+        didConnectAck(self, connack.returnCode ?? CocaMQTT.CocoaMQTTConnAck.serverUnavailable)
     }
 
     func didReceive(_ reader: CocoaMQTTReader, publish: FramePublish) {

@@ -400,7 +400,7 @@ private class Caller: CocoaMQTTDelegate {
     
     var isSSL = false
     
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocaMQTT.CocoaMQTTConnAck) {
         assert_in_del_queue()
         if ack == .accept { isConnected = true }
     }
