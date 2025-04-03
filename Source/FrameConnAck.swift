@@ -15,7 +15,7 @@ struct FrameConnAck: Frame {
     // --- Attributes
 
     ///MQTT 3.1.1
-    var returnCode: CocaMQTT.CocoaMQTTConnAck?
+    var returnCode: CocoaMQTT.CocoaMQTTConnAck?
 
     ///MQTT 5.0
     var reasonCode: CocoaMQTTCONNACKReasonCode?
@@ -32,7 +32,7 @@ struct FrameConnAck: Frame {
     //The CONNACK packet has no Payload.
 
     ///MQTT 3.1.1
-    init(returnCode: CocaMQTT.CocoaMQTTConnAck) {
+    init(returnCode: CocoaMQTT.CocoaMQTTConnAck) {
         self.returnCode = returnCode
     }
 
@@ -94,7 +94,7 @@ extension FrameConnAck: InitialWithBytes {
         let mqtt5ack = CocoaMQTTCONNACKReasonCode(rawValue: bytes[1])
         reasonCode = mqtt5ack
 
-        let ack = CocaMQTT.CocoaMQTTConnAck(byte: bytes[1]) 
+        let ack = CocoaMQTT.CocoaMQTTConnAck(byte: bytes[1]) 
         returnCode = ack
 
         propertiesBytes = bytes

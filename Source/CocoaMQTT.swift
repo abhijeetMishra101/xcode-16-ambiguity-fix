@@ -14,7 +14,7 @@ import MqttCocoaAsyncSocket
 @objc public protocol CocoaMQTTDelegate {
 
     ///
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocaMQTT.CocoaMQTTConnAck)
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTT.CocoaMQTTConnAck)
     
     ///
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16)
@@ -281,7 +281,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient {
     fileprivate var reader: CocoaMQTTReader?
     
     // Closures
-    public var didConnectAck: (CocoaMQTT, CocaMQTT.CocoaMQTTConnAck) -> Void = { _, _ in }
+    public var didConnectAck: (CocoaMQTT, CocoaMQTT.CocoaMQTTConnAck) -> Void = { _, _ in }
     public var didPublishMessage: (CocoaMQTT, CocoaMQTTMessage, UInt16) -> Void = { _, _, _ in }
     public var didPublishAck: (CocoaMQTT, UInt16) -> Void = { _, _ in }
     public var didReceiveMessage: (CocoaMQTT, CocoaMQTTMessage, UInt16) -> Void = { _, _, _ in }
@@ -687,8 +687,8 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
             internal_disconnect()
         }
 
-        delegate?.mqtt(self, didConnectAck: connack.returnCode ?? CocaMQTT.CocoaMQTTConnAck.serverUnavailable)
-        didConnectAck(self, connack.returnCode ?? CocaMQTT.CocoaMQTTConnAck.serverUnavailable)
+        delegate?.mqtt(self, didConnectAck: connack.returnCode ?? CocoaMQTT.CocoaMQTTConnAck.serverUnavailable)
+        didConnectAck(self, connack.returnCode ?? CocoaMQTT.CocoaMQTTConnAck.serverUnavailable)
     }
 
     func didReceive(_ reader: CocoaMQTTReader, publish: FramePublish) {
